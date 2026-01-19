@@ -990,15 +990,6 @@ ALTER TABLE `product_reviews`
 ALTER TABLE `seller_profiles`
   ADD CONSTRAINT `fk_seller_user` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `seller_verification_requests`
---
-ALTER TABLE `seller_verification_requests`
-  ADD CONSTRAINT `fk_svr_seller` FOREIGN KEY (`seller_id`) REFERENCES `seller_profiles` (`seller_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `seller_verification_requests`
---
 ALTER TABLE `seller_verification_requests`
   ADD CONSTRAINT `fk_svr_seller` FOREIGN KEY (`seller_id`) REFERENCES `seller_profiles` (`seller_id`) ON DELETE CASCADE;
 
