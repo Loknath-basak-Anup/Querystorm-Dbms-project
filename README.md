@@ -1,1 +1,1 @@
-# Querystorm-Dbms-project
+Optimize buyer, seller, and admin dashboards and update database

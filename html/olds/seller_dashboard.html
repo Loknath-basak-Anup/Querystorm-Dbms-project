@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seller Dashboard | QuickMart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/products_page.css" />
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+    <style>
+        body.dark-mode {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            margin: 0;
+        }
+        main.main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        body:has(.sidebar.collapsed) main.main-content {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        }
+        .page-content {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div id="sidebarContainer"></div>
+    <main class="main-content">
+        <div id="navbarContainer"></div>
+        <script>
+            async function loadNavbar() {
+                const response = await fetch('../html/navbar.html');
+                const html = await response.text();
+                document.getElementById('navbarContainer').innerHTML = html;
+                
+                // Execute scripts from loaded HTML
+                const scripts = document.getElementById('navbarContainer').querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    newScript.innerHTML = script.innerHTML;
+                    document.body.appendChild(newScript);
+                });
+                
+                const pageTitle = document.querySelector('.page-title-navbar');
+                if (pageTitle) pageTitle.innerHTML = '<i class="fas fa-gauge"></i> Seller Dashboard';
+                
+                // Initialize user menu after scripts execute
+                setTimeout(() => {
+                    if (typeof window.initializeUserMenuGlobal === 'function') {
+                        window.initializeUserMenuGlobal();
+                    }
+                    
+                    // Setup dropdown toggle with hover
+                    const userMenu = document.getElementById('userMenu');
+                    const userDropdown = document.getElementById('userDropdown');
+                    let userMenuTimeout;
+                    
+                    if (userMenu && userDropdown) {
+                        // Show on hover
+                        userMenu.onmouseenter = function(e) {
+                            clearTimeout(userMenuTimeout);
+                            userDropdown.style.display = 'block';
+                            userDropdown.style.opacity = '1';
+                            userDropdown.style.visibility = 'visible';
+                        };
+                        
+                        // Hide on leave
+                        userMenu.onmouseleave = function() {
+                            userMenuTimeout = setTimeout(() => {
+                                userDropdown.style.display = 'none';
+                                userDropdown.style.opacity = '0';
+                                userDropdown.style.visibility = 'hidden';
+                            }, 200);
+                        };
+                        
+                        userDropdown.onmouseenter = function() {
+                            clearTimeout(userMenuTimeout);
+                        };
+                        
+                        userDropdown.onmouseleave = function() {
+                            userMenuTimeout = setTimeout(() => {
+                                userDropdown.style.display = 'none';
+                                userDropdown.style.opacity = '0';
+                                userDropdown.style.visibility = 'hidden';
+                            }, 200);
+                        };
+                        
+                        // Click fallback
+                        userMenu.onclick = function(e) {
+                            e.stopPropagation();
+                            const isVisible = userDropdown.style.display === 'block';
+                            userDropdown.style.display = isVisible ? 'none' : 'block';
+                            userDropdown.style.opacity = isVisible ? '0' : '1';
+                            userDropdown.style.visibility = isVisible ? 'hidden' : 'visible';
+                        };
+                    }
+                    
+                    // Close dropdown on outside click
+                    document.onclick = function(e) {
+                        const userMenu = document.getElementById('userMenu');
+                        const userDropdown = document.getElementById('userDropdown');
+                        if (userDropdown && userMenu && !userMenu.contains(e.target) && !userDropdown.contains(e.target)) {
+                            userDropdown.style.display = 'none';
+                            userDropdown.style.opacity = '0';
+                            userDropdown.style.visibility = 'hidden';
+                        }
+                    };
+                    
+                    // Setup dark mode toggle
+                    const themeToggle = document.getElementById('themeToggle');
+                    if (themeToggle) {
+                        themeToggle.onclick = function() {
+                            const body = document.body;
+                            const icon = themeToggle.querySelector('i');
+                            body.classList.toggle('dark-mode');
+                            if (body.classList.contains('dark-mode')) {
+                                icon.classList.remove('fa-moon');
+                                icon.classList.add('fa-sun');
+                                localStorage.setItem('quickmart_theme', 'dark');
+                            } else {
+                                icon.classList.remove('fa-sun');
+                                icon.classList.add('fa-moon');
+                                localStorage.setItem('quickmart_theme', 'light');
+                            }
+                        };
+                    }
+                    
+                    // Load saved theme
+                    const savedTheme = localStorage.getItem('quickmart_theme');
+                    if (savedTheme === 'light') {
+                        document.body.classList.remove('dark-mode');
+                        const icon = themeToggle.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-moon');
+                            icon.classList.add('fa-sun');
+                        }
+                    }
+                    
+                    // Setup notification modal
+                    if (typeof window.setupNotificationModal === 'function') {
+                        window.setupNotificationModal();
+                    }
+                }, 50);
+            }
+            loadNavbar();
+        </script>
+        <div class="page-content">
+            <!-- Add Product Button -->
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 24px;">
+                <button id="addProductBtn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 8px; padding: 12px 28px; font-size: 1rem; font-family: 'Poppins', sans-serif; font-weight: 500; box-shadow: 0 2px 12px rgba(102,126,234,0.15); cursor: pointer; transition: background 0.2s;">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+            <!-- Add Product Modal -->
+            <div id="addProductModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+                <div style="background:linear-gradient(145deg, #111827 0%, #0b1020 50%, #111827 100%); color:#f8fafc; border-radius:18px; padding:28px 24px; width:100%; max-width:680px; box-shadow:0 18px 48px rgba(0,0,0,0.35); position:relative; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:12px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg,#667eea 0%, #8e9dff 100%); box-shadow:0 0 18px rgba(102,126,234,0.35); color:#0b1020;">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <div>
+                                <h2 style="margin:0; font-size:1.25rem; font-weight:600;">Add New Product</h2>
+                                <p style="margin:4px 0 0; color:#cbd5e1; font-size:0.9rem;">Complete the details and preview before publishing.</p>
+                            </div>
+                        </div>
+                        <button id="closeAddProductModal" style="background:none; border:none; color:#94a3b8; font-size:1.4rem; cursor:pointer; transition:color 0.2s;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div style="height:1px; background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.12) 60%, transparent 100%); margin-bottom:18px;"></div>
+                    <form id="addProductForm" style="display:flex; flex-direction:column; gap:14px;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <label for="productName" style="font-weight:600; color:#e2e8f0;">Product Name</label>
+                                <input type="text" id="productName" name="productName" required placeholder="e.g., Wireless Headphones" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#f8fafc;">
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <label for="productCategory" style="font-weight:600; color:#e2e8f0;">Category</label>
+                                <select id="productCategory" name="productCategory" required style="width:100%; padding:10px 12px; border-radius:10px; border:2px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#e2e8f0; font-family:'Poppins',sans-serif; font-size:0.95rem; transition:all 0.3s ease; cursor:pointer;">
+                                    <option value="" disabled selected style="color:#94a3b8;">Select a category</option>
+                                </select>
+                            </div>
+                        </div>
+                        <style>
+                            select#productCategory:focus {
+                                outline: none;
+                                border-color: #667eea;
+                                background: rgba(102, 126, 234, 0.1);
+                                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+                            }
+                            select#productCategory:hover:not(:focus) {
+                                border-color: rgba(255,255,255,0.2);
+                                background: rgba(255,255,255,0.08);
+                            }
+                            select#productCategory option {
+                                background: #0f172a;
+                                color: #e2e8f0;
+                                padding: 8px 12px;
+                            }
+                            select#productCategory option:checked {
+                                background: linear-gradient(#667eea, #667eea);
+                                background-color: #667eea;
+                            }
+                        </style>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <label for="productPrice" style="font-weight:600; color:#e2e8f0;">Price</label>
+                                <input type="number" id="productPrice" name="productPrice" required min="0" step="0.01" placeholder="0.00" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#f8fafc;">
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <label for="productStock" style="font-weight:600; color:#e2e8f0;">Stock</label>
+                                <input type="number" id="productStock" name="productStock" required min="0" step="1" placeholder="0" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#f8fafc;">
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <label for="productDescription" style="font-weight:600; color:#e2e8f0;">Description</label>
+                            <textarea id="productDescription" name="productDescription" required rows="3" placeholder="Key features, materials, sizing, etc." style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:#f8fafc; resize:vertical;"></textarea>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:end;">
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <label for="productImage" style="font-weight:600; color:#e2e8f0;">Product Image</label>
+                                <input type="file" id="productImage" name="productImage" accept="image/*" style="width:100%; color:#e2e8f0;">
+                            </div>
+                            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                                <button type="button" id="previewProductBtn" style="background:rgba(255,255,255,0.08); color:#e2e8f0; border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:10px 14px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                    <i class="fas fa-eye"></i> Preview
+                                </button>
+                                <button type="submit" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#0b1020; border:none; border-radius:10px; padding:10px 18px; font-size:0.95rem; font-weight:700; cursor:pointer; box-shadow:0 12px 28px rgba(102,126,234,0.25);">
+                                    <i class="fas fa-plus-circle"></i> Add Product
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="productPreview" style="display:none; margin-top:18px; padding:14px 12px; border:1px dashed rgba(255,255,255,0.18); border-radius:12px; background:rgba(255,255,255,0.03);">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; color:#cbd5e1; font-weight:600;">
+                            <i class="fas fa-clipboard-list"></i>
+                            Live Preview
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; color:#e2e8f0; font-size:0.95rem;">
+                            <div><strong>Name:</strong> <span id="previewName">-</span></div>
+                            <div><strong>Category:</strong> <span id="previewCategory">-</span></div>
+                            <div><strong>Price:</strong> <span id="previewPrice">-</span></div>
+                            <div><strong>Stock:</strong> <span id="previewStock">-</span></div>
+                            <div style="grid-column:1/-1;"><strong>Description:</strong> <span id="previewDescription">-</span></div>
+                            <div style="grid-column:1/-1; display:flex; align-items:center; gap:12px;">
+                                <strong>Image:</strong>
+                                <div id="previewImageWrapper" style="display:flex; align-items:center; gap:12px;">
+                                    <span id="previewImageFallback" style="color:#94a3b8;">No file selected</span>
+                                    <img id="previewImagePreview" alt="Preview" style="display:none; width:120px; height:120px; object-fit:cover; border-radius:10px; border:1px solid rgba(255,255,255,0.12); box-shadow:0 8px 22px rgba(0,0,0,0.25);" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="toastContainer" style="position:fixed; right:18px; bottom:18px; display:flex; flex-direction:column; gap:10px; z-index:10000;"></div>
+            <!-- Top Stats Row -->
+            <div class="dashboard-stats" data-aos="zoom-in-up">
+                <div class="stat-card-3d">
+                    <div class="card-inner">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Sale</span>
+                            <span class="stat-value">$2435</span>
+                            <span class="stat-change" style="color: #f59e0b;">
+                                <i class="fas fa-info-circle"></i> 37% Last Week
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card-3d">
+                    <div class="card-inner">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 0 30px rgba(245, 87, 108, 0.6);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Visitors</span>
+                            <span class="stat-value">6547</span>
+                            <span class="stat-change" style="color: #f59e0b;">
+                                <i class="fas fa-info-circle"></i> 23% Last Week
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card-3d">
+                    <div class="card-inner">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); box-shadow: 0 0 30px rgba(79, 172, 254, 0.6);">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">New Orders</span>
+                            <span class="stat-value">1523</span>
+                            <span class="stat-change" style="color: #f59e0b;">
+                                <i class="fas fa-info-circle"></i> 17% Last Week
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card-3d">
+                    <div class="card-inner">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); box-shadow: 0 0 30px rgba(250, 112, 154, 0.6);">
+                            <i class="fa-solid fa-user-tag"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Customers</span>
+                            <span class="stat-value">2310</span>
+                            <span class="stat-change" style="color: #f59e0b;">
+                                <i class="fas fa-info-circle"></i> 14% Last Week
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Monthly Revenue Table -->
+                <div class="dashboard-section revenue-section" data-aos="zoom-in-up">
+                    <div class="section-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Monthly Revenue <span class="dropdown-label">This Year ▼</span></h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Revenue</th>
+                                    <th>Growth</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row-hover">
+                                    <td>January</td>
+                                    <td>৳ 45,000</td>
+                                    <td style="color: #10b981;">+12%</td>
+                                    <td><span class="status-badge status-received">Completed</span></td>
+                                </tr>
+                                <tr class="table-row-hover">
+                                    <td>February</td>
+                                    <td>৳ 52,300</td>
+                                    <td style="color: #10b981;">+16%</td>
+                                    <td><span class="status-badge status-received">Completed</span></td>
+                                </tr>
+                                <tr class="table-row-hover">
+                                    <td>March</td>
+                                    <td>৳ 48,900</td>
+                                    <td style="color: #ef4444;">-7%</td>
+                                    <td><span class="status-badge status-received">Completed</span></td>
+                                </tr>
+                                <tr class="table-row-hover">
+                                    <td>April</td>
+                                    <td>৳ 61,500</td>
+                                    <td style="color: #10b981;">+26%</td>
+                                    <td><span class="status-badge status-received">Completed</span></td>
+                                </tr>
+                                <tr class="table-row-hover">
+                                    <td>May</td>
+                                    <td>৳ 58,200</td>
+                                    <td style="color: #ef4444;">-5%</td>
+                                    <td><span class="status-badge status-received">Completed</span></td>
+                                </tr>
+                                <tr class="table-row-hover">
+                                    <td>June</td>
+                                    <td>৳ 67,800</td>
+                                    <td style="color: #10b981;">+17%</td>
+                                    <td><span class="status-badge status-received">Completed</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Company Progress -->
+                <div class="dashboard-section email-section" data-aos="zoom-in-up">
+                    <div class="section-header">
+                        <h3><i class="fas fa-building"></i> Company Progress</h3>
+                    </div>
+                    <div class="company-profile">
+                        <div class="company-header">
+                            <img src="/images/qmart.png" alt="Company Logo" class="company-logo">
+                            <div class="company-info">
+                                <h4 class="company-name">QuickMart Electronics</h4>
+                                <p class="seller-name">Ahmed Hassan</p>
+                                <span class="company-badge">Premium Seller</span>
+                            </div>
+                        </div>
+                        <div class="progress-stats">
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Sales Target</span>
+                                    <span class="progress-value">75%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Customer Satisfaction</span>
+                                    <span class="progress-value">92%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%; background: linear-gradient(90deg, #10b981 0%, #059669 100%);"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Product Quality</span>
+                                    <span class="progress-value">88%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 88%; background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Delivery Speed</span>
+                                    <span class="progress-value">85%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%; background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="company-stats-grid">
+                            <div class="stat-item">
+                                <i class="fas fa-star"></i>
+                                <div>
+                                    <strong>4.8</strong>
+                                    <span>Rating</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-box"></i>
+                                <div>
+                                    <strong>1,234</strong>
+                                    <span>Products</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-trophy"></i>
+                                <div>
+                                    <strong>Gold</strong>
+                                    <span>Badge</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="dashboard-section full-width" data-aos="zoom-in-up">
+                <div class="section-header">
+                    <h3><i class="fas fa-list"></i> Recent Orders <span class="dropdown-label">This Week ▼</span></h3>
+                </div>
+                <div class="table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Customer</th>
+                                <th>Purchase On</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Tracking</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-row-hover">
+                                <td>#0218076</td>
+                                <td>Branice Haye</td>
+                                <td>21 Aug 2019</td>
+                                <td>$676</td>
+                                <td><span class="status-badge status-received">Received</span></td>
+                                <td><a href="#" class="tracking-link">DF0HJY</a></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>#0234078</td>
+                                <td>Toll Holder</td>
+                                <td>24 Jun 2019</td>
+                                <td>$456</td>
+                                <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                                <td><a href="#" class="tracking-link">JH8KL</a></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>#0258963</td>
+                                <td>Shane Will</td>
+                                <td>09 Aug 2019</td>
+                                <td>$845</td>
+                                <td><span class="status-badge status-received">Received</span></td>
+                                <td><a href="#" class="tracking-link">KJ5LO</a></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>#0215684</td>
+                                <td>Daniel Hook</td>
+                                <td>10 Dec 2019</td>
+                                <td>$354</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td><a href="#" class="tracking-link">BG2KL</a></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>#0263589</td>
+                                <td>Smith Widson</td>
+                                <td>21 Nov 2019</td>
+                                <td>$634</td>
+                                <td><span class="status-badge status-received">Received</span></td>
+                                <td><a href="#" class="tracking-link">MK0LK</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Delivery Progress -->
+            <div class="dashboard-section delivery-section" data-aos="zoom-in-up">
+                <div class="section-header">
+                    <h3><i class="fas fa-truck"></i> Delivery <span class="dropdown-label">In Progress ▼</span></h3>
+                </div>
+                <div class="delivery-list">
+                    <div class="delivery-item">
+                        <div class="delivery-product">
+                            <div class="product-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <span class="product-name">MacBook Pro 15"</span>
+                        </div>
+                        <div class="delivery-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); box-shadow: 0 0 15px rgba(102, 126, 234, 0.6);"></div>
+                            </div>
+                            <span class="progress-text">65%</span>
+                        </div>
+                    </div>
+
+                    <div class="delivery-item">
+                        <div class="delivery-product">
+                            <div class="product-icon" style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); box-shadow: 0 0 20px rgba(245, 87, 108, 0.5);">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <span class="product-name">I Mac Pro 2019</span>
+                        </div>
+                        <div class="delivery-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%; background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%); box-shadow: 0 0 15px rgba(245, 87, 108, 0.6);"></div>
+                            </div>
+                            <span class="progress-text">15%</span>
+                        </div>
+                    </div>
+
+                    <div class="delivery-item">
+                        <div class="delivery-product">
+                            <div class="product-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);">
+                                <i class="fas fa-pen"></i>
+                            </div>
+                            <span class="product-name">iPad Intous Pen</span>
+                        </div>
+                        <div class="delivery-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); box-shadow: 0 0 15px rgba(79, 172, 254, 0.6);"></div>
+                            </div>
+                            <span class="progress-text">25%</span>
+                        </div>
+                    </div>
+
+                    <div class="delivery-item">
+                        <div class="delivery-product">
+                            <div class="product-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); box-shadow: 0 0 20px rgba(250, 112, 154, 0.5);">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <span class="product-name">MacBook Pro 13"</span>
+                        </div>
+                        <div class="delivery-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%; background: linear-gradient(90deg, #fa709a 0%, #fee140 100%); box-shadow: 0 0 15px rgba(250, 112, 154, 0.6);"></div>
+                            </div>
+                            <span class="progress-text">50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Container -->
+        <div id="footerContainer" class="mt-8"></div>
+    </main>
+
+    <script src="../assets/js/products_page.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        if (typeof AOS !== 'undefined') {
+            AOS.init({ duration: 800, easing: 'ease-in-out', once: true, offset: 100 });
+        }
+
+        // Load Footer
+        async function loadFooter() {
+            try {
+                const response = await fetch('../html/footer.html');
+                const html = await response.text();
+                document.getElementById('footerContainer').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading footer:', error);
+            }
+        }
+        loadFooter();
+
+        // Add Product Modal Logic
+        const addProductBtn = document.getElementById('addProductBtn');
+        const addProductModal = document.getElementById('addProductModal');
+        const closeAddProductModal = document.getElementById('closeAddProductModal');
+        const previewProductBtn = document.getElementById('previewProductBtn');
+        const addProductForm = document.getElementById('addProductForm');
+        const productPreview = document.getElementById('productPreview');
+        const categorySelect = document.getElementById('productCategory');
+        const previewFields = {
+            name: document.getElementById('previewName'),
+            category: document.getElementById('previewCategory'),
+            price: document.getElementById('previewPrice'),
+            stock: document.getElementById('previewStock'),
+            description: document.getElementById('previewDescription'),
+            imageFallback: document.getElementById('previewImageFallback'),
+            imagePreview: document.getElementById('previewImagePreview')
+        };
+        let previewImageObjectUrl = null;
+
+        // Fetch and populate categories
+        async function loadCategories() {
+            try {
+                const response = await fetch('../html/products_page.html');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const filterButtons = doc.querySelectorAll('[data-filter]');
+                const categories = new Set();
+                
+                filterButtons.forEach(btn => {
+                    const filter = btn.getAttribute('data-filter');
+                    if (filter && filter !== 'all') {
+                        categories.add(filter);
+                    }
+                });
+
+                // Populate dropdown
+                if (categorySelect && categories.size > 0) {
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                        categorySelect.appendChild(option);
+                    });
+                } else {
+                    // Fallback categories if fetch fails
+                    const fallbackCategories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports', 'Beauty', 'Toys', 'Food'];
+                    fallbackCategories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.toLowerCase();
+                        option.textContent = category;
+                        categorySelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.warn('Could not load categories from products page, using fallback:', error);
+                // Fallback categories
+                const fallbackCategories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports', 'Beauty', 'Toys', 'Food'];
+                fallbackCategories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.toLowerCase();
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
+            }
+        }
+
+        // Load categories on page load
+        loadCategories();
+
+        function showToast(message) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) return;
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.background = 'linear-gradient(135deg,#22c55e 0%,#16a34a 100%)';
+            toast.style.color = '#0b1020';
+            toast.style.padding = '12px 14px';
+            toast.style.borderRadius = '10px';
+            toast.style.boxShadow = '0 10px 24px rgba(0,0,0,0.25)';
+            toast.style.fontWeight = '700';
+            toast.style.fontSize = '0.95rem';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8px)';
+            toast.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            toastContainer.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            });
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(8px)';
+                setTimeout(() => toast.remove(), 200);
+            }, 2400);
+        }
+
+        function openModal() {
+            addProductModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            addProductModal.style.display = 'none';
+            if (productPreview) productPreview.style.display = 'none';
+            if (previewImageObjectUrl) {
+                URL.revokeObjectURL(previewImageObjectUrl);
+                previewImageObjectUrl = null;
+            }
+        }
+
+        function renderPreview() {
+            if (!addProductForm || !productPreview) return;
+            const formData = new FormData(addProductForm);
+            const price = formData.get('productPrice');
+            previewFields.name.textContent = formData.get('productName') || '-';
+            previewFields.category.textContent = formData.get('productCategory') || '-';
+            previewFields.price.textContent = price ? `$${parseFloat(price).toFixed(2)}` : '-';
+            previewFields.stock.textContent = formData.get('productStock') || '-';
+            previewFields.description.textContent = formData.get('productDescription') || '-';
+            const file = formData.get('productImage');
+            if (previewImageObjectUrl) {
+                URL.revokeObjectURL(previewImageObjectUrl);
+                previewImageObjectUrl = null;
+            }
+            if (file && file.name) {
+                previewImageObjectUrl = URL.createObjectURL(file);
+                previewFields.imagePreview.src = previewImageObjectUrl;
+                previewFields.imagePreview.style.display = 'block';
+                previewFields.imageFallback.style.display = 'none';
+            } else {
+                previewFields.imagePreview.style.display = 'none';
+                previewFields.imageFallback.style.display = 'inline';
+                previewFields.imageFallback.textContent = 'No file selected';
+            }
+            productPreview.style.display = 'block';
+        }
+
+        if (addProductBtn && addProductModal && closeAddProductModal) {
+            addProductBtn.onclick = openModal;
+            closeAddProductModal.onclick = closeModal;
+            addProductModal.onclick = function(e) {
+                if (e.target === addProductModal) {
+                    closeModal();
+                }
+            };
+        }
+
+        if (previewProductBtn) {
+            previewProductBtn.onclick = function() {
+                renderPreview();
+            };
+        }
+
+        if (addProductForm) {
+            addProductForm.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(addProductForm);
+                console.log('Product Data:', {
+                    name: formData.get('productName'),
+                    description: formData.get('productDescription'),
+                    price: formData.get('productPrice'),
+                    stock: formData.get('productStock'),
+                    category: formData.get('productCategory'),
+                    image: formData.get('productImage')
+                });
+                showToast('Product added successfully');
+                closeModal();
+                addProductForm.reset();
+            };
+        }
+    </script>
+</body>
+</html>
