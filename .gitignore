@@ -1,0 +1,23 @@
+# Sensitive files
+phpinfo.php
+test_*.php
+includes/db.php
+
+# Upload directories
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
