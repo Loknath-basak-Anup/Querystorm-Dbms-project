@@ -1,1 +1,1 @@
-Optimize buyer, seller, and admin dashboards and update database
+Created shop list page and database, updated categories and subcategories in the admin dashboard.
