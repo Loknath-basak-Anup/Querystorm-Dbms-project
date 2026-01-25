@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2026 at 06:56 PM
+-- Generation Time: Jan 23, 2026 at 06:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,38 @@ SET time_zone = "+00:00";
 --
 -- Database: `smart_marketplace`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `activity_clears`
+--
+
+CREATE TABLE `activity_clears` (
+  `user_id` int(11) NOT NULL,
+  `cleared_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `activity_clears`
+--
+
+INSERT INTO `activity_clears` (`user_id`, `cleared_at`) VALUES
+(7, '2026-01-23 21:22:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_revenue_entries`
+--
+
+CREATE TABLE `admin_revenue_entries` (
+  `entry_id` int(11) NOT NULL,
+  `source_type` varchar(40) NOT NULL,
+  `amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `note` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -46,8 +78,7 @@ CREATE TABLE `banners` (
 --
 
 INSERT INTO `banners` (`banner_id`, `title`, `subtitle`, `image_url`, `link_url`, `position`, `is_active`, `sort_order`, `starts_at`, `ends_at`, `created_at`) VALUES
-(1, 'Fresh Deals', 'Up to 35% off on essentials', '/QuickMart/images/banners/molla-soap.png', NULL, 'products_top', 1, 1, NULL, NULL, '2026-01-10 05:02:15'),
-(2, 'Home Essentials', 'Upgrade your home corner', '/QuickMart/images/banners/rflbulti.png', NULL, 'products_top', 1, 2, NULL, NULL, '2026-01-10 05:02:15');
+(3, 'Molla Soap', NULL, '/QuickMart/uploads/banners/banner_1769189092_63428c0f.png', NULL, 'products_top', 1, 0, '2026-01-23 23:24:00', '2026-01-24 23:24:00', '2026-01-23 17:24:52');
 
 -- --------------------------------------------------------
 
@@ -117,20 +148,6 @@ CREATE TABLE `cart_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin_revenue_entries`
---
-
-CREATE TABLE `admin_revenue_entries` (
-  `entry_id` int(11) NOT NULL,
-  `source_type` varchar(40) NOT NULL,
-  `amount` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `note` varchar(255) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `categories`
 --
 
@@ -192,14 +209,14 @@ CREATE TABLE `coupons` (
   `min_purchase` decimal(10,2) DEFAULT 0.00,
   `max_discount` decimal(10,2) DEFAULT NULL,
   `price` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `usage_limit` int(11) NOT NULL DEFAULT 1,
   `starts_at` datetime DEFAULT NULL,
   `ends_at` datetime DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `is_published` tinyint(1) NOT NULL DEFAULT 0,
   `seller_id` int(11) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `usage_limit` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -232,8 +249,8 @@ CREATE TABLE `coupon_purchases` (
   `download_token` varchar(64) DEFAULT NULL,
   `downloaded_at` datetime DEFAULT NULL,
   `used_at` datetime DEFAULT NULL,
-  `uses_left` int(11) NOT NULL DEFAULT 1,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `uses_left` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -308,8 +325,8 @@ INSERT INTO `inventory` (`inventory_id`, `product_id`, `stock_qty`, `sku`, `upda
 (35, 35, 73, 'QM-09-0035', '2026-01-10 05:02:16'),
 (36, 36, 101, 'QM-09-0036', '2026-01-10 05:02:16'),
 (37, 37, 112, 'QM-10-0037', '2026-01-10 05:02:16'),
-(38, 38, 104, 'QM-10-0038', '2026-01-10 05:02:16'),
-(39, 39, 40, 'QM-10-0039', '2026-01-10 05:02:16'),
+(38, 38, 103, 'QM-10-0038', '2026-01-23 15:12:05'),
+(39, 39, 39, 'QM-10-0039', '2026-01-23 15:12:05'),
 (40, 40, 43, 'QM-10-0040', '2026-01-10 05:02:16'),
 (41, 41, 88, 'QM-11-0041', '2026-01-10 05:02:16'),
 (42, 42, 44, 'QM-11-0042', '2026-01-10 05:02:16'),
@@ -330,7 +347,8 @@ INSERT INTO `inventory` (`inventory_id`, `product_id`, `stock_qty`, `sku`, `upda
 (57, 57, 7, 'QM-15-0057', '2026-01-10 05:02:16'),
 (58, 58, 93, 'QM-15-0058', '2026-01-10 05:02:16'),
 (59, 59, 89, 'QM-15-0059', '2026-01-10 05:02:16'),
-(60, 60, 39, 'QM-15-0060', '2026-01-10 05:02:16');
+(60, 60, 39, 'QM-15-0060', '2026-01-10 05:02:16'),
+(61, 61, 1, NULL, '2026-01-23 13:11:32');
 
 -- --------------------------------------------------------
 
@@ -359,8 +377,36 @@ CREATE TABLE `notifications` (
   `message` text NOT NULL,
   `type` varchar(40) DEFAULT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `action_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`notification_id`, `user_id`, `title`, `message`, `type`, `is_read`, `created_at`, `action_url`) VALUES
+(1, 3, 'New coupon approval', 'Coupon VALENTINEME needs your approval.', 'coupon', 0, '2026-01-23 17:29:28', NULL),
+(2, 8, 'New coupon approval', 'Coupon VALENTINEME needs your approval.', 'coupon', 0, '2026-01-23 17:29:28', NULL),
+(4, 3, 'New coupon approval', 'Coupon HOTTIME needs your approval.', 'coupon', 0, '2026-01-23 19:08:28', NULL),
+(5, 8, 'New coupon approval', 'Coupon HOTTIME needs your approval.', 'coupon', 0, '2026-01-23 19:08:28', NULL),
+(7, 7, 'Order placed', 'Order #1 confirmed. Preparing for dispatch.', 'order', 0, '2026-01-23 19:11:32', NULL),
+(8, 8, 'New order received', 'Shahriar Ahmed placed order #1. Start packing.', 'order', 0, '2026-01-23 19:11:32', NULL),
+(9, 1, 'Order created', 'Order #1 placed by Shahriar Ahmed.', 'order', 0, '2026-01-23 19:11:32', NULL),
+(10, 7, 'Delivery update', 'Packing started for order #1.', 'delivery', 0, '2026-01-23 19:11:33', NULL),
+(11, 8, 'Delivery update', 'Packing order #1 for shipment.', 'delivery', 0, '2026-01-23 19:11:33', NULL),
+(13, 7, 'Delivery update', 'Courier assigned: Korotoa Courier (Rajshahi City Branch, Shaheb Bazar).', 'delivery', 0, '2026-01-23 19:11:43', NULL),
+(14, 8, 'Delivery update', 'Courier assigned for order #1: Korotoa Courier.', 'delivery', 0, '2026-01-23 19:11:43', NULL),
+(16, 7, 'Delivery update', 'Shipment handed to Korotoa Courier branch for nearby transfer.', 'delivery', 0, '2026-01-23 19:11:53', NULL),
+(17, 8, 'Delivery update', 'Order #1 moved to Korotoa Courier branch.', 'delivery', 0, '2026-01-23 19:11:53', NULL),
+(19, 7, 'Delivery update', 'Delivery rider is on the way for order #1.', 'delivery', 0, '2026-01-23 19:12:03', NULL),
+(20, 8, 'Delivery update', 'Order #1 out for delivery.', 'delivery', 0, '2026-01-23 19:12:03', NULL),
+(22, 7, 'Delivery update', 'Order #1 delivered successfully.', 'delivery', 0, '2026-01-23 19:12:13', NULL),
+(23, 8, 'Delivery update', 'Order #1 delivered to customer.', 'delivery', 0, '2026-01-23 19:12:13', NULL),
+(25, 7, 'Order placed', 'Order #2 confirmed. Waiting for seller approval.', 'order', 0, '2026-01-23 21:12:05', NULL),
+(26, 3, 'Approve delivery', 'Order #2 is waiting for courier approval.', 'order', 0, '2026-01-23 21:12:05', '/QuickMart/seller_dashboard/approve_delivery.php?order_id=2'),
+(27, 1, 'Order created', 'Order #2 placed by Shahriar Ahmed.', 'order', 0, '2026-01-23 21:12:05', NULL),
+(28, 7, 'Delivery approved', 'Seller approved order #2. Sent to Sundarban Courier Service.', 'delivery', 0, '2026-01-23 21:15:08', '/QuickMart/buyer_dashboard/track_product.php?order_id=2');
 
 -- --------------------------------------------------------
 
@@ -375,6 +421,14 @@ CREATE TABLE `orders` (
   `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `buyer_id`, `status`, `total_amount`, `created_at`) VALUES
+(1, 7, 'completed', 145.00, '2026-01-23 13:11:32'),
+(2, 7, 'completed', 785.00, '2026-01-23 15:12:05');
 
 -- --------------------------------------------------------
 
@@ -403,6 +457,38 @@ CREATE TABLE `order_delivery` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `order_delivery`
+--
+
+INSERT INTO `order_delivery` (`order_id`, `courier_name`, `courier_address`, `created_at`) VALUES
+(1, 'Korotoa Courier', 'Rajshahi City Branch, Shaheb Bazar', '2026-01-23 19:11:32'),
+(2, 'Sundarban Courier Service', 'Dhaka North Hub, Mirpur 10', '2026-01-23 21:15:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_delivery_approvals`
+--
+
+CREATE TABLE `order_delivery_approvals` (
+  `approval_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `seller_id` int(11) NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `courier_name` varchar(120) DEFAULT NULL,
+  `courier_address` varchar(160) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `approved_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_delivery_approvals`
+--
+
+INSERT INTO `order_delivery_approvals` (`approval_id`, `order_id`, `seller_id`, `status`, `courier_name`, `courier_address`, `created_at`, `approved_at`) VALUES
+(1, 2, 3, 'approved', 'Sundarban Courier Service', 'Dhaka North Hub, Mirpur 10', '2026-01-23 21:12:05', '2026-01-23 21:15:08');
+
 -- --------------------------------------------------------
 
 --
@@ -414,6 +500,19 @@ CREATE TABLE `order_delivery_steps` (
   `step` varchar(40) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_delivery_steps`
+--
+
+INSERT INTO `order_delivery_steps` (`order_id`, `step`, `created_at`) VALUES
+(1, 'courier_assigned', '2026-01-23 19:11:42'),
+(1, 'delivered', '2026-01-23 19:12:13'),
+(1, 'handoff_branch', '2026-01-23 19:11:53'),
+(1, 'out_for_delivery', '2026-01-23 19:12:03'),
+(1, 'packing', '2026-01-23 19:11:33'),
+(2, 'courier_assigned', '2026-01-23 21:15:08'),
+(2, 'packing', '2026-01-23 21:15:08');
 
 -- --------------------------------------------------------
 
@@ -428,6 +527,15 @@ CREATE TABLE `order_items` (
   `price` decimal(10,2) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `price`, `quantity`) VALUES
+(1, 1, 61, 150.00, 1),
+(2, 2, 38, 326.00, 1),
+(3, 2, 39, 459.00, 1);
 
 -- --------------------------------------------------------
 
@@ -511,7 +619,8 @@ INSERT INTO `products` (`product_id`, `seller_id`, `category_id`, `subcategory_i
 (57, 3, 15, 15, 'Wireless Mouse', 'Wireless Mouse — Bangladesh market price (2026). Category: Computer Accessories.', 16566.00, 'active', '2026-01-10 05:02:15'),
 (58, 3, 15, 15, 'Mechanical Keyboard', 'Mechanical Keyboard — Bangladesh market price (2026). Category: Computer Accessories.', 22595.00, 'active', '2026-01-10 05:02:15'),
 (59, 3, 15, 15, 'SSD 512GB', 'SSD 512GB — Bangladesh market price (2026). Category: Computer Accessories.', 17723.00, 'active', '2026-01-10 05:02:15'),
-(60, 3, 15, 15, 'Webcam 1080p', 'Webcam 1080p — Bangladesh market price (2026). Category: Computer Accessories.', 14311.00, 'active', '2026-01-10 05:02:15');
+(60, 3, 15, 15, 'Webcam 1080p', 'Webcam 1080p — Bangladesh market price (2026). Category: Computer Accessories.', 14311.00, 'active', '2026-01-10 05:02:15'),
+(61, 8, 6, 6, 'Himu 10', 'Himu 10 is written by Humayun Ahmed', 150.00, 'active', '2026-01-23 11:12:16');
 
 -- --------------------------------------------------------
 
@@ -590,7 +699,8 @@ INSERT INTO `product_images` (`image_id`, `product_id`, `image_url`, `created_at
 (57, 57, 'https://img.drz.lazcdn.com/static/bd/p/e61843ec5307e224339a1a662148f25a.png_400x400q75.avif', '2026-01-10 05:02:15'),
 (58, 58, 'https://img.drz.lazcdn.com/static/bd/p/2a3e1b84c17245dd5db957f633b533e5.jpg_400x400q75.avif', '2026-01-10 05:02:15'),
 (59, 59, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcGHq0_wiDInSc9aj2VcCCkbFUtEE5cNVXCw&s', '2026-01-10 05:02:15'),
-(60, 60, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTONT_Ih2jiAHFpVpsfCfb0bUrgfuvpr_iujA&s', '2026-01-10 05:02:15');
+(60, 60, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTONT_Ih2jiAHFpVpsfCfb0bUrgfuvpr_iujA&s', '2026-01-10 05:02:15'),
+(61, 61, 'https://iinspwgtlrguudrxlbhn.supabase.co/storage/v1/object/public/product-images/products/8/1769166734_d5b52b59eff6.jpg', '2026-01-23 11:12:16');
 
 -- --------------------------------------------------------
 
@@ -604,7 +714,8 @@ CREATE TABLE `product_reviews` (
   `buyer_id` int(11) NOT NULL,
   `rating` tinyint(3) NOT NULL,
   `comment` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `image_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -646,7 +757,7 @@ CREATE TABLE `seller_profiles` (
 --
 
 INSERT INTO `seller_profiles` (`seller_id`, `shop_name`, `shop_description`, `verified`, `created_at`) VALUES
-(3, 'Demo Shop', 'Main demo seller shop', 1, '2026-01-10 05:02:15'),
+(3, 'Dream Bazar', 'Main demo seller shop', 1, '2026-01-10 05:02:15'),
 (8, 'Mayer Doa Stationary', 'I sell stationary items', 1, '2026-01-22 17:51:04');
 
 -- --------------------------------------------------------
@@ -814,11 +925,36 @@ CREATE TABLE `wallet_transactions` (
 --
 
 INSERT INTO `wallet_transactions` (`txn_id`, `user_id`, `txn_type`, `amount`, `note`, `created_at`) VALUES
-(1, 7, 'deposit', 15000.00, 'Add Money via card', '2026-01-22 17:48:15');
+(1, 7, 'deposit', 15000.00, 'Add Money via card', '2026-01-22 17:48:15'),
+(2, 7, 'purchase', 150.00, 'Coupon purchase #2', '2026-01-23 11:02:57'),
+(3, 1, 'credit', 150.00, 'Coupon sold #2', '2026-01-23 11:02:57'),
+(4, 7, 'purchase', 150.00, 'Coupon purchase #3', '2026-01-23 11:37:43'),
+(5, 1, 'credit', 150.00, 'Coupon sold #3', '2026-01-23 11:37:43'),
+(6, 7, 'purchase', 150.00, 'Coupon purchase #4', '2026-01-23 13:10:27'),
+(7, 1, 'credit', 150.00, 'Coupon sold #4', '2026-01-23 13:10:27'),
+(8, 7, 'purchase', 145.00, 'Order #1', '2026-01-23 13:11:32'),
+(9, 8, 'credit', 145.00, 'Sale from Order #1', '2026-01-23 13:11:32'),
+(10, 7, 'purchase', 785.00, 'Order #2', '2026-01-23 15:12:05'),
+(11, 3, 'credit', 785.00, 'Sale from Order #2', '2026-01-23 15:12:05'),
+(12, 7, 'purchase', 150.00, 'Coupon purchase #5', '2026-01-23 15:28:30'),
+(13, 1, 'credit', 150.00, 'Coupon sold #5', '2026-01-23 15:28:30');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `activity_clears`
+--
+ALTER TABLE `activity_clears`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `admin_revenue_entries`
+--
+ALTER TABLE `admin_revenue_entries`
+  ADD PRIMARY KEY (`entry_id`),
+  ADD KEY `idx_revenue_type` (`source_type`);
 
 --
 -- Indexes for table `banners`
@@ -853,13 +989,6 @@ ALTER TABLE `cart_items`
   ADD PRIMARY KEY (`cart_item_id`),
   ADD UNIQUE KEY `uq_cart_product` (`cart_id`,`product_id`),
   ADD KEY `fk_ci_product` (`product_id`);
-
---
--- Indexes for table `admin_revenue_entries`
---
-ALTER TABLE `admin_revenue_entries`
-  ADD PRIMARY KEY (`entry_id`),
-  ADD KEY `idx_revenue_type` (`source_type`);
 
 --
 -- Indexes for table `categories`
@@ -950,6 +1079,14 @@ ALTER TABLE `order_coupons`
 --
 ALTER TABLE `order_delivery`
   ADD PRIMARY KEY (`order_id`);
+
+--
+-- Indexes for table `order_delivery_approvals`
+--
+ALTER TABLE `order_delivery_approvals`
+  ADD PRIMARY KEY (`approval_id`),
+  ADD UNIQUE KEY `uniq_order_seller` (`order_id`,`seller_id`),
+  ADD KEY `idx_order_status` (`order_id`,`status`);
 
 --
 -- Indexes for table `order_delivery_steps`
@@ -1054,10 +1191,16 @@ ALTER TABLE `wallet_transactions`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_revenue_entries`
+--
+ALTER TABLE `admin_revenue_entries`
+  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `banners`
 --
 ALTER TABLE `banners`
-  MODIFY `banner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `banner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `carts`
@@ -1069,13 +1212,7 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `admin_revenue_entries`
---
-ALTER TABLE `admin_revenue_entries`
-  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1093,31 +1230,31 @@ ALTER TABLE `conversations`
 -- AUTO_INCREMENT for table `coupons`
 --
 ALTER TABLE `coupons`
-  MODIFY `coupon_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `coupon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `coupon_product_allow`
 --
 ALTER TABLE `coupon_product_allow`
-  MODIFY `allow_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `allow_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `coupon_purchases`
 --
 ALTER TABLE `coupon_purchases`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `coupon_seller_requests`
 --
 ALTER TABLE `coupon_seller_requests`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -1129,31 +1266,37 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `order_delivery_approvals`
+--
+ALTER TABLE `order_delivery_approvals`
+  MODIFY `approval_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `product_reviews`
@@ -1195,7 +1338,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `wallet_transactions`
 --
 ALTER TABLE `wallet_transactions`
-  MODIFY `txn_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `txn_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
