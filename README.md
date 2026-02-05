@@ -82,4 +82,4 @@ QuickMart is a full‑featured marketplace platform with dedicated **Buyer**, **
 ---
 
 ## 🙌 Credits
-Developed by **Shahriar Ahmed Riaz**
+Developed by **Shahriar Ahmed Riaz , Md. Tameem Mehedi, Loknath Basak Anup , Mst. Lamiya Zahan Mim **
