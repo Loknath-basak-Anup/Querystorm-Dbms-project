@@ -1,5 +1,0 @@
-Service name: QuickMart Verification
-Service ID: service_v0deb2d
-
-Template name: QuickMart Verification
-Template ID: template_i6uhuko
