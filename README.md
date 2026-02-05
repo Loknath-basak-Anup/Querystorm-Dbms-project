@@ -1,85 +1,128 @@
-﻿# 🛍️ QuickMart — Smart Marketplace Platform
+<p align="center">
+  <img src="https://i.postimg.cc/Z5GX7C0P/qmart_logo2.png" width="140" alt="QuickMart Logo">
+</p>
 
-✨ **Optimize buyer, seller, and admin dashboards and update database**
+<h1 align="center">🛒 QuickMart</h1>
+<h3 align="center">DBMS Final Project | Smart Marketplace System</h3>
 
----
-
-## 🚀 Overview
-QuickMart is a full‑featured marketplace platform with dedicated **Buyer**, **Seller**, and **Admin** panels. It includes coupon management, invoice generation, delivery tracking, wallet systems, and notification workflows—built to streamline end‑to‑end commerce.  
-
----
-
-## 🧩 Key Modules & Highlights
-
-### 🛒 Buyer Experience
-- 🧾 **Coupon Store** with usage limits and tracking
-- 📦 **Order Tracking** with live progress animation
-- 🧠 **Smart Notifications** with action links
-- 💳 **Wallet & History** for quick access
-
-### 🧑‍💼 Seller Experience
-- ✅ **Delivery Approval Flow**
-- 🚚 **Courier Selection UI**
-- 📊 **Sales & History Dashboard**
-- 💼 **Seller Wallet & Settings**
-
-### 🧾 Admin Experience
-- 📈 **Revenue System** (coupon + delivery + monthly + banner ads)
-- 🪙 **Admin Wallet**
-- 🛡️ **Verification & Role Change Management**
-- 🧩 **Coupon Oversight** with usage per buyer
+<p align="center">
+  <img src="https://i.postimg.cc/qvy17QMG/Quick_Mart.png" alt="Project Poster">
+</p>
 
 ---
 
-## 🧾 Database Updates
-- ✅ `admin_revenue_entries` table added
-- ✅ `usage_limit` column added to coupons
-- ✅ `uses_left` column added to coupon purchases
-- ✅ Banner seed data removed
+## 🚀 Project Overview
+
+**QuickMart** is a smart, database-driven marketplace system developed as a **DBMS Final Project**.  
+It allows **buyers, sellers, and admins** to interact through a complete e-commerce workflow powered by **PHP & MySQL**.
+
+The system focuses on real-world DBMS concepts such as relational tables, role-based access, and secure data handling.
 
 ---
 
-## 📄 Invoice System
-- 🧾 **PDF invoices** auto‑generated after coupon purchase
-- 🔁 **Re‑download allowed** at any time
+## 🧠 Core Features
+
+✨ **Buyer & Seller Authentication**  
+🛍️ **Product Browsing, Cart & Checkout**  
+🎟️ **Coupon & Wallet System**  
+📦 **Order Tracking & Invoice Download**  
+🧑‍💼 **Admin Control Panel**  
+🗄️ **Relational MySQL Database Integration**
 
 ---
 
-## 🧭 UI Improvements
-- ✅ Mobile fixes and category scrolling updates
-- ✅ Seller history layout refinements
-- ✅ Stat card click overlay fix
+## 🖥️ Demo Screenshots
+
+### 🌐 Landing Page
+<img src="https://i.postimg.cc/5y8mt2fd/image.png" alt="Landing Page">
 
 ---
 
-## 📂 Quick Project Map
-- 📁 `buyer_dashboard/` — buyer‑side features
-- 📁 `seller_dashboard/` — seller‑side features
-- 📁 `admin_folder/` — admin panel
-- 📁 `actions/` — backend workflow handlers
-- 📁 `includes/` — database + session + helpers
+### 🧾 Products Page
+<img src="https://i.postimg.cc/SN0TbwmQ/Screenshot_(29).png" alt="Products Page">
+<img src="https://i.postimg.cc/VLj7fDNR/Screenshot_(30).png" alt="Products Page 2">
 
 ---
 
-## ⚙️ Local Setup (XAMPP)
-1. ✅ Place project in **XAMPP/htdocs/QuickMart**
-2. ✅ Import database from `smart_marketplace.sql`
-3. ✅ Update DB credentials in `includes/db.php`
-4. ✅ Start **Apache** and **MySQL** from XAMPP
-5. ✅ Visit: `http://localhost/QuickMart`
+### 🛒 Seller Dashboard
+<img src="https://i.postimg.cc/ZKk7z14g/Screenshot_(26).png" alt="Seller Dashboard">
 
 ---
 
-## 🛡️ Notes
-- Admin files are located in `admin_folder/` (root admin files redirect)
-- All key flows are implemented using PHP + MySQL
+### 🧑‍💼 Admin Panel
+<img src="https://i.postimg.cc/jdz8xZj8/Screenshot_(36).png" alt="Admin Panel">
 
 ---
 
-## 📌 Version
-**QuickMart v1.4** — Updated & Published ✅
+### 🎟️ Coupon Creation
+<img src="https://i.postimg.cc/yYFf1vNh/Screenshot_(40).png" alt="Coupon Creation Page">
 
 ---
 
-## 🙌 Credits
-Developed by **Shahriar Ahmed Riaz , Md. Tameem Mehedi, Loknath Basak Anup , Mst. Lamiya Zahan Mim **
+## 🧩 Database Design (DBMS Focus)
+
+- Database Name: **smart_marketplace**
+- Relational Tables:
+  - users
+  - products
+  - cart_items
+  - orders
+  - banners
+  - coupons
+
+📌 Implements:
+- Primary & Foreign Keys  
+- Normalized Table Structure  
+- SQL Queries (CRUD Operations)
+
+---
+
+## 🛠️ Technologies Used
+
+| Layer | Technology |
+|-----|------------|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | PHP |
+| Database | MySQL |
+| Server | XAMPP |
+| Tools | phpMyAdmin |
+
+---
+
+## 🎥 Project Demo Video
+
+▶️ **YouTube Overview Video (Unlisted)**  
+*(Link added in project report)*
+
+---
+
+## 👥 Meet the Team
+
+<p align="center">
+  <img src="https://i.postimg.cc/qMYFqzsj/Colorful_Modern_Meet_The_Team_Instagram_Post.png" alt="Team">
+</p>
+
+### 💻 Developed by **QueryStorm**
+
+- 👨‍💻 Shahriar Ahmed Riaz  
+- 👨‍💻 Loknath Basak Anup  
+- 👨‍💻 Tameem Mehedi Prince  
+- 👩‍💻 Lamiya Zahan Mim  
+
+---
+
+## 🌱 Future Improvements
+
+🔐 Online Payment Gateway  
+🚚 Delivery & Courier Tracking  
+📊 Advanced Admin Analytics  
+📱 Mobile App Version
+
+---
+
+## 📌 Final Note
+
+This project was developed for **academic purposes** as part of a **Database Management Systems (DBMS)** course.  
+All features demonstrate practical implementation of database concepts in a real-world marketplace scenario.
+
+⭐ If you like this project, feel free to give it a star!
